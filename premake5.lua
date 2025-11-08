@@ -26,13 +26,14 @@ project "Hazel"
 
     includedirs
     {
+        "%{prj.name}/src",
         "C:/dev/Hazel-s/Hazel/vendor/spdlog/include"
     }
 
     filter "system:windows"
         cppdialect "C++20"
         staticruntime "On"
-        systemversion "10.0.26100.0"
+        systemversion "latest"
         buildoptions { "/utf-8" }
 
         defines
@@ -42,9 +43,15 @@ project "Hazel"
         }
 
         postbuildcommands
-        {
-            ("{COPYFILE} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
+        {   
+            -- Make sure the Sandbox output folder exists
+            ("{MKDIR} ../bin/" .. outputdir .. "/Sandbox"),
+
+            -- Copy Hazel.dll into the Sandbox output folder
+            ("{COPYFILE} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox/Hazel.dll\"")
         }
+
+
 
     filter "configurations:Debug"
         defines "HZ_DEBUG"
@@ -87,7 +94,7 @@ project "Sandbox"
     filter "system:windows"
         cppdialect "C++20"
         staticruntime "On"
-        systemversion "10.0.26100.0"
+        systemversion "latest"
         buildoptions { "/utf-8" }
 
         defines
